@@ -7,8 +7,9 @@ have a wide variety of genres make "sense" when listening. Music flows nicely
 into each other without big changes in key/tempo/mood. If this is of use to
 you let me know :-)
 
-- Jan
+Jan
 
 ## Requirements
-this program uses the spotipy & python_tsp libraries
+This program uses the spotipy & python_tsp libraries
+
 `pip install spotipy python_tsp`
