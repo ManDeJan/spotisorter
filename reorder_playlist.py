@@ -14,8 +14,13 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 # get playlist from .env
 playlist = os.getenv("PLAYLIST")
 
-user = sp.current_user()
-results = sp.user_playlist_tracks(user, playlist_id=playlist)
+results = {
+    "items": [],
+}
+playlist_len = sp.playlist(playlist_id=playlist)["tracks"]["total"]
+for i in range(0, playlist_len, 100):
+    new_results = sp.playlist_items(fields=["items"], playlist_id=playlist, limit=100, offset=i)
+    results["items"].extend(new_results["items"])
 
 # open sorted_tracks.csv and read into a list, sort on new_order
 with open("sorted_tracks.csv", "r") as csvfile:
@@ -40,4 +45,4 @@ for i in range(len(new_orders)):
         continue
     sp.playlist_reorder_items(playlist, track_to_be_moved, i)
     new_orders.insert(i, new_orders.pop(track_to_be_moved))
-    sleep(0.1)  # be a good internet citizen
+    sleep(0.5)  # be a good internet citizen

@@ -2,7 +2,7 @@ import numpy as np
 from python_tsp.exact import solve_tsp_dynamic_programming
 from python_tsp.heuristics import solve_tsp_simulated_annealing
 from itertools import combinations
-
+from random import shuffle
 import csv
 
 filename = "spotify_features.csv"
@@ -27,6 +27,7 @@ with open(filename, "r") as csvfile:
         dict(zip(map(lambda h: h.strip(), header), map(try_type, track)))
         for track in tracks
     ]
+    # shuffle(tracks) # beetje veel van het goede
 
 # get min and max tempo
 min_tempo, max_tempo = min(map(lambda track: track["tempo"], tracks)), max(
@@ -103,9 +104,10 @@ distances = np.array(
     [[distance_function(track1, track2) for track2 in tracks] for track1 in tracks]
 )
 distances[:, 0] = 0  # open ended problem
-
+x0 = list(range(len(tracks)))
+shuffle(x0)
 # solve with solve_tsp_simulated_annealing
-permutation, distance = solve_tsp_simulated_annealing(distances, alpha=0.999)
+permutation, distance = solve_tsp_simulated_annealing(distances, x0=x0, alpha=0.999)
 # save the track name with the old and new order; key, mode, energy, valence, danceability, tempo and loudness to a csv
 with open("sorted_tracks.csv", "w") as csvfile:
     writer = csv.writer(csvfile)
